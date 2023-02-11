@@ -1,0 +1,29 @@
+Arch
+	DB
+		Players
+		Items
+		Mobs
+	Net
+		ClientServer
+			One per zone / scene
+			messaging, updating zone
+			ServerData
+				List of entities constantly updating
+			ClientData
+				readonly Entity data periodically synchronized
+				Local input actions
+		Mobile
+			Stuff that can move and interact
+			Common stats like health and such
+			Players
+				Can send input commands to server
+	GameFlow
+		Connect
+		Steam Auth
+		Look up characters by steam ID key
+		Any characters show as linkdead?
+			reconnect to linkdead character
+		else
+			char select
+		Log in at last location
+			Handoff to zone
