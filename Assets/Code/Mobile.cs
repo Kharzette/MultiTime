@@ -17,6 +17,14 @@ public class Mobile : NetworkBehaviour
 		Debug.Log("Network spawn! " + name + ", " + ", " + IsLocalPlayer);
 
 		mNameText	=GetComponentInChildren<TMP_Text>();
+
+		//attach camera
+		if(IsLocalPlayer)
+		{
+			GameObject	go	=GameObject.Find("Main Camera");
+
+			go.transform.SetParent(transform);
+		}
 	}
 
 
@@ -25,7 +33,7 @@ public class Mobile : NetworkBehaviour
 	}
 
 
-	protected void Update()
+	internal virtual void Update()
 	{
 		if(!IsSpawned || !IsClient)
 		{

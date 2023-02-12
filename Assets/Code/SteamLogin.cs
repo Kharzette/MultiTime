@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Steamworks;
 
-public class Login : MonoBehaviour
+public class SteamLogin : MonoBehaviour
 {
 	public string	mSteamName;
 

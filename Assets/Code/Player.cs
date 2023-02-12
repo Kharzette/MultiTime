@@ -1,9 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Unity.Netcode;
 using Steamworks;
-using TMPro;
 
 
 public class Player : Mobile
@@ -36,11 +34,11 @@ public class Player : Mobile
 	}
 
 
-	void Update()
+	internal override void Update()
 	{
 		base.Update();
 
-		if(IsServer || !IsSpawned)
+		if(!IsClient || !IsSpawned)
 		{
 			return;
 		}
