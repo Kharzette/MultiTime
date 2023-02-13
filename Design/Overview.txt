@@ -1,0 +1,67 @@
+Pantheon, all around 10-11 feet tall
+	Daeghom
+		Wife of Dios
+		Green garbed, thicc
+	Dios
+		Male, Divination, sight
+		Godkingish look
+	Hewsos
+		Daughter of Dios
+		Female, red and gold garb
+		Dawn, dancing, vehicles
+	Nalthuwi
+		Rotting snakeman
+
+Classes
+	Soldier
+		All weapons and armor
+		Channel ability is active block on self or defensive target
+		Threat abilities, bleeds, snares
+	Priest of Daeghom
+		Cloth / Leather, Blunt weapons
+		Druidic magic, bonus in forests, touch healing, snare and root vines
+	Priest of Dios
+		Cloth, Staves
+		Star and Sun magic, big nukes, gates, wizlike, truesight
+	Priest of Hewsos
+		Holy magic, ranged healing, dazzling
+		Cloth, swords, daggers
+	Scout?
+		leather, chain
+		detect traps, stealth, tracking
+		high damage, channel backstabbish thing or trap deteciton out of combat?
+	Monk/Brawler/Pilgrim
+		Martial arts type thing?  Maybe from the far east?
+	Priest of Nalthuwi
+		Snake stuff, death, underworld
+
+Gameplay
+	Tab targeting with defensive target for other players or friendly npcs
+	Combat
+		Combat rounds will probably be 2 seconds standard, with haste/weapon speed reducing that
+		Weapon switches incur a time penalty
+		Limited readied abilities
+		Ability usage should flow and be natural with no UI at all
+		Predictable cooldowns so no need to stare at an interface
+		Reactive abilties so it isn't just 123 123 123 over and over
+			DAOC did this well with evade/parry/block reactives
+	Groups, 4-8, haven't decided on group size yet
+	Health / Endurance / Mana type system, not sure of the names yet
+	SWG style wounds to pools
+	Death
+		Dead players lie where they died
+		enemies may take items from the corpse
+		Friendlies can carry a dead player
+		May be locations to resurrect dead players
+		Spells or rituals can resurrect
+		Death causes heavy wounding
+		Dead players can still chat but the longer they are dead the more garbled and faint the text becomes
+	Enemy areas
+		Places where enemies live will usually be tiered
+		Enemies will come from the areas in the next tier up
+		Dead enemies will not respawn, but organize into parties and move back in together from the higher tier area
+		Holding enemy areas will slowly ramp up the difficulty and rewards
+	Magic
+		All magic is divine and comes from outside entities
+		Most spells can be channeled, this changes it into a constant stream effect
+	Melee Abilities

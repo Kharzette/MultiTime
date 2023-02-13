@@ -1,0 +1,35 @@
+	Get movement replicating and smoov
+	Grounded jumps
+	Throw up a few stairs and platforms and stuff to see how falling looks
+	Combat dummy to practice combat on
+	Basic enemy AI
+	Click selecting stuff
+	Use inworld objects
+		Highlight when aimed at
+		Do a hand cursor in the crosshair spot or something
+	Destroy inworld objects?
+		How do they get restored?  Enemy rebuild?
+	Character select screen
+		Choice of class
+		Choice of diety if the class doesn't lock it in
+	Build a pathing test map
+		Keep in mind the enemy size
+	Character models
+		Skeleton should have attach points for gear
+	Ladders
+	Moving geometry for doors and platforms, always tricksy with networking
+	Basic limited climbing, apex legends style
+		Should be able to hop over small fences and such or scramble up short walls
+	Crouch sliding apex legends style
+	UI
+		Health / End / Mana
+		Ability bar
+		Inventory
+		Levelup related ritual stuff
+		Trading
+		Banking
+	Traps
+	Spawn manager
+		Track regroup/respawns and difficulty / reward stuff
+	Patrol AI
+		Engagement rules
