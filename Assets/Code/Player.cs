@@ -8,6 +8,7 @@ public class Player : Mobile
 {
 	ulong	mLocalID;	//steam id valid on client
 
+	PlayerMove	mPM;
 	PlayerCam	mMNC;
 
 
@@ -49,8 +50,11 @@ public class Player : Mobile
 				}
 			}
 
-			mMNC	=new PlayerCam(GetComponent<CharacterController>(),
-				noggin, transform, GetComponent<PlayerInputs>());
+			CharacterController	cc	=GetComponent<CharacterController>();
+			PlayerInputs		pi	=GetComponent<PlayerInputs>();
+
+			mPM		=new PlayerMove(cc, transform, pi);
+			mMNC	=new PlayerCam(cc, noggin, transform, pi);
 		}
 	}
 
@@ -72,7 +76,13 @@ public class Player : Mobile
 			return;
 		}
 
-		mMNC.Update();
+		bool	bSnapCam;
+		mMNC.UpdateTurn(out bSnapCam);
+
+		Vector3	moveVec;
+		mPM.Update(out moveVec);
+
+		mMNC.UpdateCam(moveVec, bSnapCam);
 	}
 
 

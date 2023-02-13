@@ -26,6 +26,7 @@ x	Grounded jumps
 		Should be able to hop over small fences and such or scramble up short walls
 	Crouch sliding apex legends style
 	UI
+		Control customization
 		Health / End / Mana
 		Ability bar
 		Inventory
