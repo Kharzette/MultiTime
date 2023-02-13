@@ -8,6 +8,8 @@ public class Player : Mobile
 {
 	ulong	mLocalID;	//steam id valid on client
 
+	PlayerCam	mMNC;
+
 
 	void Start()
 	{
@@ -30,6 +32,25 @@ public class Player : Mobile
 				name		=GetRandomName();
 				mLocalID	=GetRandomID();
 			}
+
+			//hunt for noggin bone
+			Transform	noggin	=null;
+
+			int	count	=transform.childCount;
+			for(int i=0;i < count;i++)
+			{
+				Transform	t	=transform.GetChild(i);
+
+				//will eventually replace this with real skeleton stuff
+				if(t.name == "FakeNogginBone")
+				{
+					noggin	=t;
+					break;
+				}
+			}
+
+			mMNC	=new PlayerCam(GetComponent<CharacterController>(),
+				noggin, transform, GetComponent<PlayerInputs>());
 		}
 	}
 
@@ -42,6 +63,16 @@ public class Player : Mobile
 		{
 			return;
 		}
+	}
+
+	void FixedUpdate()
+	{
+		if(!IsClient || !IsSpawned)
+		{
+			return;
+		}
+
+		mMNC.Update();
 	}
 
 

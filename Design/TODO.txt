@@ -1,5 +1,9 @@
+	Smooth zoom a tiny bit
+	Return zoom after cam collision over
+x	Get updates on fixed timesteps
+x	Grounded jumps
 	Get movement replicating and smoov
-	Grounded jumps
+	Check out how rigidbodies work networked
 	Throw up a few stairs and platforms and stuff to see how falling looks
 	Combat dummy to practice combat on
 	Basic enemy AI

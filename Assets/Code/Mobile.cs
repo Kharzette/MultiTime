@@ -23,7 +23,19 @@ public class Mobile : NetworkBehaviour
 		{
 			GameObject	go	=GameObject.Find("Main Camera");
 
-			go.transform.SetParent(transform);
+			//hunt for noggin bone
+			int	count	=transform.childCount;
+			for(int i=0;i < count;i++)
+			{
+				Transform	t	=transform.GetChild(i);
+
+				//will eventually replace this with real skeleton stuff
+				if(t.name == "FakeNogginBone")
+				{
+					go.transform.SetParent(t);
+					break;
+				}
+			}
 		}
 	}
 
