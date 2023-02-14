@@ -7,7 +7,7 @@ public class PlayerMove
 	//references from owner object
 	CharacterController	mCC;
 	Camera				mMyCam;
-	ClientTransform		mObjXForm;
+	Transform			mObjXForm;
 
 	PlayerInputs	mPI;
 	Vector3			mVelocity;
@@ -31,7 +31,7 @@ public class PlayerMove
 	const float	SwimFriction		=10f;	//Frictols
 
 
-	internal PlayerMove(CharacterController cc, ClientTransform obj, PlayerInputs pi)
+	internal PlayerMove(CharacterController cc, Transform obj, PlayerInputs pi)
 	{
 		mCC			=cc;
 		mPI			=pi;

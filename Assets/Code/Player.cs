@@ -12,9 +12,6 @@ public class Player : Mobile
 	PlayerMove	mPM;
 	PlayerCam	mMNC;
 
-	//networked transform
-	ClientTransform	mCT;
-
 
 	void Start()
 	{
@@ -57,10 +54,8 @@ public class Player : Mobile
 			CharacterController	cc	=GetComponent<CharacterController>();
 			PlayerInputs		pi	=GetComponent<PlayerInputs>();
 
-			mCT	=GetComponent<ClientTransform>();
-
-			mPM		=new PlayerMove(cc, mCT, pi);
-			mMNC	=new PlayerCam(cc, noggin, mCT, pi);
+			mPM		=new PlayerMove(cc, transform, pi);
+			mMNC	=new PlayerCam(cc, noggin, transform, pi);
 		}
 	}
 
@@ -78,6 +73,11 @@ public class Player : Mobile
 	void FixedUpdate()
 	{
 		if(!IsClient || !IsSpawned)
+		{
+			return;
+		}
+
+		if(!IsLocalPlayer)
 		{
 			return;
 		}

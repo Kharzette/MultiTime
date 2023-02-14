@@ -10,7 +10,7 @@ internal class PlayerCam
 	CharacterController	mCC;
 	Camera				mMyCam;
 	Transform			mNogginBone;
-	ClientTransform		mObjXForm;
+	Transform			mObjXForm;
 
 	float			mCamDist, mCamTargetDist, mLerpTime;
 	PlayerInputs	mPI;
@@ -25,7 +25,7 @@ internal class PlayerCam
 	const float	ZoomLerpTime		=3f;	//time to smooth out zooms
 
 
-	internal PlayerCam(CharacterController cc, Transform head, ClientTransform obj, PlayerInputs pi)
+	internal PlayerCam(CharacterController cc, Transform head, Transform obj, PlayerInputs pi)
 	{
 		mCC			=cc;
 		mPI			=pi;
