@@ -8,8 +8,12 @@ public class Player : Mobile
 {
 	ulong	mLocalID;	//steam id valid on client
 
+	//3rd person movement stuff
 	PlayerMove	mPM;
 	PlayerCam	mMNC;
+
+	//networked transform
+	ClientTransform	mCT;
 
 
 	void Start()
@@ -53,8 +57,10 @@ public class Player : Mobile
 			CharacterController	cc	=GetComponent<CharacterController>();
 			PlayerInputs		pi	=GetComponent<PlayerInputs>();
 
-			mPM		=new PlayerMove(cc, transform, pi);
-			mMNC	=new PlayerCam(cc, noggin, transform, pi);
+			mCT	=GetComponent<ClientTransform>();
+
+			mPM		=new PlayerMove(cc, mCT, pi);
+			mMNC	=new PlayerCam(cc, noggin, mCT, pi);
 		}
 	}
 

@@ -9,7 +9,8 @@ internal class PlayerCam
 	//references from owner object
 	CharacterController	mCC;
 	Camera				mMyCam;
-	Transform			mNogginBone, mObjXForm;
+	Transform			mNogginBone;
+	ClientTransform		mObjXForm;
 
 	float			mCamDist, mCamTargetDist, mLerpTime;
 	PlayerInputs	mPI;
@@ -24,7 +25,7 @@ internal class PlayerCam
 	const float	ZoomLerpTime		=3f;	//time to smooth out zooms
 
 
-	internal PlayerCam(CharacterController cc, Transform head, Transform obj, PlayerInputs pi)
+	internal PlayerCam(CharacterController cc, Transform head, ClientTransform obj, PlayerInputs pi)
 	{
 		mCC			=cc;
 		mPI			=pi;
@@ -102,14 +103,14 @@ internal class PlayerCam
 			moveVec.Normalize();
 
 			//rotate player to face camera direction if moving
-			Vector3	pdir	=mMyCam.transform.position - mObjXForm.position;
+			Vector3	pdir	=mMyCam.transform.position - mObjXForm.transform.position;
 
 			//flatten
 			pdir.y	=0f;
 			pdir.Normalize();
 
 			//when moving, rotate the player to face
-			mObjXForm.rotation	=Quaternion.LookRotation(-pdir);
+			mObjXForm.transform.rotation	=Quaternion.LookRotation(-pdir);
 
 			//adjust camera position for new rotation
 			mMyCam.transform.rotation	=camCopy;

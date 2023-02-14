@@ -7,7 +7,7 @@ public class PlayerMove
 	//references from owner object
 	CharacterController	mCC;
 	Camera				mMyCam;
-	Transform			mObjXForm;
+	ClientTransform		mObjXForm;
 
 	PlayerInputs	mPI;
 	Vector3			mVelocity;
@@ -31,7 +31,7 @@ public class PlayerMove
 	const float	SwimFriction		=10f;	//Frictols
 
 
-	internal PlayerMove(CharacterController cc, Transform obj, PlayerInputs pi)
+	internal PlayerMove(CharacterController cc, ClientTransform obj, PlayerInputs pi)
 	{
 		mCC			=cc;
 		mPI			=pi;
@@ -51,7 +51,7 @@ public class PlayerMove
 			mVelocity.y	=0f;
 		}
 
-		Vector3	startPos	=mObjXForm.position;
+		Vector3	startPos	=mObjXForm.transform.position;
 
 		//TODO: check contents / move modes
 		bool	bGroundMove	=false;
@@ -64,7 +64,7 @@ public class PlayerMove
 		mCC.Move(move - startPos);
 
 		//get resulting move vec
-		moveVec	=mObjXForm.position - startPos;
+		moveVec	=mObjXForm.transform.position - startPos;
 	}
 
 
@@ -86,7 +86,7 @@ public class PlayerMove
 
 	Vector3 UpdateFly()
 	{
-		Vector3	startPos	=mObjXForm.position;
+		Vector3	startPos	=mObjXForm.transform.position;
 
 		Vector3	moveVec	=mMyCam.transform.forward * mPI.mMoveVec.y;
 
@@ -138,7 +138,7 @@ public class PlayerMove
 			}
 		}
 
-		Vector3	startPos	=mObjXForm.position;
+		Vector3	startPos	=mObjXForm.transform.position;
 		
 		Vector3	moveVec	=mMyCam.transform.forward * mPI.mMoveVec.y;
 
