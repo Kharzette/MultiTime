@@ -11,7 +11,7 @@ internal class PlayerCam
 	Camera				mMyCam;
 	Transform			mNogginBone, mObjXForm;
 
-	float			mCamDist;
+	float			mCamDist, mCamTargetDist, mLerpTime;
 	PlayerInputs	mPI;
 
 
@@ -21,6 +21,7 @@ internal class PlayerCam
 	const float	MaxZoom				=25;
 	const float	MaxUpDownLookAngle	=55f;
 	const float	CamSphereRadius		=0.15f;	//size of collision sphere around camera
+	const float	ZoomLerpTime		=3f;	//time to smooth out zooms
 
 
 	internal PlayerCam(CharacterController cc, Transform head, Transform obj, PlayerInputs pi)
@@ -34,7 +35,8 @@ internal class PlayerCam
 
 		mMyCam	=go.GetComponent<Camera>();
 
-		mCamDist	=mMyCam.transform.localPosition.magnitude;
+		mCamDist		=mMyCam.transform.localPosition.magnitude;
+		mCamTargetDist	=mCamDist;
 	}
 
 
@@ -47,10 +49,11 @@ internal class PlayerCam
 
 		if(wheel.y != 0f)
 		{
-			mCamDist	-=ZoomSpeed * wheel.y * Time.deltaTime;
-			mCamDist	=Mathf.Clamp(mCamDist, MinZoom, MaxZoom);
+			mCamTargetDist	-=ZoomSpeed * wheel.y * Time.deltaTime;
+			mCamTargetDist	=Mathf.Clamp(mCamTargetDist, MinZoom, MaxZoom);
 
 			bSnapCameraLocal	=true;
+			mLerpTime			=ZoomLerpTime;
 		}
 
 		//rotate camera if right mouse held
@@ -83,6 +86,13 @@ internal class PlayerCam
 	internal void UpdateCam(Vector3 moveVec, bool bSnapCameraLocal)
 	{
 		bool	bGrounded	=mCC.isGrounded;
+
+		if(mLerpTime > 0f)
+		{
+			float	lerpPercent	=mLerpTime / ZoomLerpTime;
+
+			mCamDist	=Mathf.Lerp(mCamTargetDist, mCamDist, lerpPercent);
+		}
 
 		if(moveVec != Vector3.zero)
 		{
@@ -123,9 +133,11 @@ internal class PlayerCam
 			mMyCam.transform.localPosition	=dir * mCamDist;
 		}
 
+
 		//see if camera is in a bad spot
 		RaycastHit	hit;
-		if(Physics.SphereCast(mNogginBone.position, CamSphereRadius, -worldDir, out hit, mCamDist))
+		if(Physics.SphereCast(mNogginBone.position, CamSphereRadius, -worldDir,
+					out hit, mCamTargetDist))
 		{
 			//hit something, shorten camDist
 			mCamDist	=hit.distance;
@@ -134,5 +146,16 @@ internal class PlayerCam
 			//redo position
 			mMyCam.transform.localPosition	=dir * mCamDist;
 		}
+		else
+		{
+			//no cam collision, see if a lerp needed
+			if(mCamDist != mCamTargetDist)
+			{
+				mLerpTime	=ZoomLerpTime;
+			}
+		}
+
+		mLerpTime	-=Time.deltaTime;
+		mLerpTime	=Mathf.Clamp(mLerpTime, 0f, ZoomLerpTime);
 	}
 }

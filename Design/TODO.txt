@@ -1,7 +1,9 @@
-	Smooth zoom a tiny bit
-	Return zoom after cam collision over
+x	Smooth zoom a tiny bit
+x	Return zoom after cam collision over
 x	Get updates on fixed timesteps
 x	Grounded jumps
+	Think about overall movement speed + jump
+		If jump increases forward move speed a bit, people will hop everywhere
 	Get movement replicating and smoov
 	Check out how rigidbodies work networked
 	Throw up a few stairs and platforms and stuff to see how falling looks
@@ -20,6 +22,22 @@ x	Grounded jumps
 		Keep in mind the enemy size
 	Character models
 		Skeleton should have attach points for gear
+		Animations
+			movement
+				walk, run, sneak, crouch, jump, vault/climb
+			combat
+				basic attacks
+					1hand
+						slash, poke, spearpoke
+					two hand polearm
+						poke, slash side, slash overhead, parry
+					two hand closegrip (sword/axe)
+						poke, slash side, slash overhead, parry
+					shield
+						block, bash
+				dodge, block, get hit
+			a few spell varieties
+		Constraints for ragdolls
 	Ladders
 	Moving geometry for doors and platforms, always tricksy with networking
 	Basic limited climbing, apex legends style
