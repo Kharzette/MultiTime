@@ -16,7 +16,7 @@ internal class PlayerCam
 	PlayerInputs	mPI;
 
 
-	const float TurnSpeed			=3f;
+	const float TurnSpeed			=0.03f;
 	const float	ZoomSpeed			=1f;
 	const float	MinZoom				=5f;
 	const float	MaxZoom				=25;
@@ -41,6 +41,7 @@ internal class PlayerCam
 	}
 
 
+	//called by regular update
 	internal void UpdateTurn(out bool bSnapCameraLocal)
 	{
 		//no binding options for this
@@ -50,7 +51,7 @@ internal class PlayerCam
 
 		if(wheel.y != 0f)
 		{
-			mCamTargetDist	-=ZoomSpeed * wheel.y * Time.deltaTime;
+			mCamTargetDist	-=ZoomSpeed * wheel.y;
 			mCamTargetDist	=Mathf.Clamp(mCamTargetDist, MinZoom, MaxZoom);
 
 			bSnapCameraLocal	=true;
@@ -58,14 +59,14 @@ internal class PlayerCam
 		}
 
 		//rotate camera if right mouse held
-		if(Cursor.lockState == CursorLockMode.Locked)
+		if(mPI.mbMouseLook)
 		{
 			Vector3	ang	=mMyCam.transform.eulerAngles;
 
-			ang.y	+=(mPI.mMouseDelta.x * TurnSpeed * Time.deltaTime);
+			ang.y	+=(mPI.mMouseDelta.x * TurnSpeed);
 
 			//do camera look up down
-			ang.x	-=(mPI.mMouseDelta.y * TurnSpeed * Time.deltaTime);
+			ang.x	-=(mPI.mMouseDelta.y * TurnSpeed);
 
 			//wrap into negatives for easier clamping
 			if(ang.x > 180f)
@@ -78,13 +79,9 @@ internal class PlayerCam
 
 			bSnapCameraLocal	=true;
 		}
-		else
-		{
-			Cursor.lockState	=CursorLockMode.None;
-		}
 	}
 
-	internal void UpdateCam(Vector3 moveVec, bool bSnapCameraLocal)
+	internal void UpdateCam(float secDelta, Vector3 moveVec, bool bSnapCameraLocal)
 	{
 		bool	bGrounded	=mCC.isGrounded;
 
@@ -156,7 +153,7 @@ internal class PlayerCam
 			}
 		}
 
-		mLerpTime	-=Time.deltaTime;
+		mLerpTime	-=secDelta;
 		mLerpTime	=Mathf.Clamp(mLerpTime, 0f, ZoomLerpTime);
 	}
 }

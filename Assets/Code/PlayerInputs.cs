@@ -6,9 +6,37 @@ using UnityEngine.InputSystem;
 
 public class PlayerInputs : MonoBehaviour
 {
+	//polled mouse values
+	Vector2	mPrevMouse, mCurMouse;
+
+	internal Vector2	mMouseDelta;	
+
 	//variables set by input
-	internal Vector2	mMoveVec, mMouseDelta;
+	internal Vector2	mMoveVec;
+	internal bool		mbMouseLook;
 	internal bool		mbJump, mbWalk, mbAscend, mbDescend;
+
+
+	internal void	PollMouse()
+	{
+		mPrevMouse	=mCurMouse;
+
+		mCurMouse	=Mouse.current.position.ReadValue();
+
+		mMouseDelta	=mCurMouse - mPrevMouse;
+
+		if(mbMouseLook)
+		{
+			//reset cursor pos to center
+			Cursor.lockState	=CursorLockMode.Locked;
+			Cursor.lockState	=CursorLockMode.None;
+			Cursor.visible		=false;
+		}
+		else
+		{
+			Cursor.visible	=true;
+		}
+	}
 
 
 	void	OnMove(InputValue val)
@@ -23,19 +51,7 @@ public class PlayerInputs : MonoBehaviour
 
 	void OnToggleMouseLook(InputValue val)
 	{
-		if(val.isPressed)
-		{
-			Cursor.lockState	=CursorLockMode.Locked;
-		}
-		else
-		{
-			Cursor.lockState	=CursorLockMode.None;
-		}
-	}
-
-	void OnLook(InputValue val)
-	{
-		mMouseDelta	=val.Get<Vector2>();
+		mbMouseLook	=val.isPressed;
 	}
 
 	void OnAscend(InputValue val)

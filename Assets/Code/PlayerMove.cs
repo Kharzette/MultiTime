@@ -8,6 +8,7 @@ public class PlayerMove
 	CharacterController	mCC;
 	Camera				mMyCam;
 	Transform			mObjXForm;
+	Transform			mNoggin;
 
 	PlayerInputs	mPI;
 	Vector3			mVelocity;
@@ -31,11 +32,12 @@ public class PlayerMove
 	const float	SwimFriction		=10f;	//Frictols
 
 
-	internal PlayerMove(CharacterController cc, Transform obj, PlayerInputs pi)
+	internal PlayerMove(CharacterController cc, Transform obj, Transform noggin, PlayerInputs pi)
 	{
 		mCC			=cc;
 		mPI			=pi;
 		mObjXForm	=obj;
+		mNoggin		=noggin;
 
 		GameObject	go	=GameObject.Find("Main Camera");
 
@@ -43,7 +45,7 @@ public class PlayerMove
 	}
 	
 
-	internal void Update(out Vector3 moveVec)
+	internal void Update(float secDelta, out Vector3 moveVec)
 	{
 		bool	bGrounded	=mCC.isGrounded;
 		if(bGrounded && mVelocity.y < 0)
@@ -55,7 +57,7 @@ public class PlayerMove
 
 		//TODO: check contents / move modes
 		bool	bGroundMove	=false;
-		Vector3	move	=UpdateGround(out bGroundMove);
+		Vector3	move	=UpdateGround(secDelta, out bGroundMove);
 
 		//flip ground move as it returns as a jump bool
 		bGroundMove	=!bGroundMove;
@@ -67,6 +69,79 @@ public class PlayerMove
 		moveVec	=mObjXForm.transform.position - startPos;
 	}
 
+
+	//check to see if a bipedal player can climb out of liquid
+	//onto some solid ground.  Assumes player in water
+	bool	bCanClimbOut()
+	{
+		Vector3	midPos	=mCC.center;
+		Vector3	eyePos	=mNoggin.localToWorldMatrix.MultiplyPoint(Vector3.zero);
+
+		//not sure how one obtains volume contents in unity yet
+		/*
+		UInt32	contents	=mZone.GetWorldContents(eyePos);
+		if(contents != 0)
+		{
+			mST.ModifyStringText(mFonts[0], "Eye Contents: " + contents, "ClimbStatus");
+			return	false;
+		}
+
+		//noggin is in empty space
+		//Not to be confused with empty contents
+		BoundingBox	crouchBox	=Misc.MakeBox(PlayerBoxWidth,
+			PlayerBoxCrouching, PlayerBoxWidth);
+
+		//trace upward to about crouch height above the eye
+		Vector3	traceStart	=eyePos;
+		Vector3	traceTarget	=eyePos + Vector3.Up * PlayerBoxCrouching;
+
+		Collision	col;
+		bool	bHit	=mZone.TraceAll(null, crouchBox,
+			traceStart, traceTarget, out col);
+		if(bHit)
+		{
+			mST.ModifyStringText(mFonts[0], "Eye Contents: " + contents +
+				", Head hit something...", "ClimbStatus");
+			return	false;	//banged into something
+		}
+
+		//get a horizon leveled view direction
+		//cam direction backward
+		Vector3	flatLookVec	=-mGD.GCam.Forward;
+		flatLookVec.Y	=0f;
+		flatLookVec.Normalize();
+
+		//trace forward about 1.5 box widths
+		traceStart	=traceTarget;
+		traceTarget	+=flatLookVec * (PlayerBoxWidth * 1.5f);
+
+		bHit	=mZone.TraceAll(null, crouchBox,
+			traceStart, traceTarget, out col);
+		if(bHit)
+		{
+			mST.ModifyStringText(mFonts[0], "Eye Contents: " + contents +
+				", Forward trace hit something...", "ClimbStatus");
+			return	false;	//banged into something
+		}
+
+		//trace down to check for solid ground
+		traceStart	=traceTarget;
+		traceTarget	+=Vector3.Down * (PlayerBoxCrouching * 2f);
+
+		bHit	=mZone.TraceAll(null, crouchBox,
+			traceStart, traceTarget, out col);
+		if(!bHit)
+		{
+			mST.ModifyStringText(mFonts[0], "Eye Contents: " + contents +
+				", Down trace empty...", "ClimbStatus");
+			return	false;	//nothing to climb onto
+		}
+
+		//see if the ground is good
+		return	col.mPlaneHit.IsGround();
+*/
+		return	false;
+	}
 
 	void AccumulateVelocity(Vector3 moveVec)
 	{
@@ -84,7 +159,55 @@ public class PlayerMove
 	}
 
 
-	Vector3 UpdateFly()
+	Vector3 UpdateSwimming(float secDelta)
+	{
+		Vector3	startPos	=mObjXForm.transform.position;
+
+		Vector3	moveVec	=mMyCam.transform.forward * mPI.mMoveVec.y;
+
+		moveVec	+=mPI.mMoveVec.x * mMyCam.transform.right;
+
+		moveVec	*=SwimMoveForce;
+
+		AccumulateVelocity(moveVec);
+
+		Vector3	pos	=startPos;
+
+		if(mPI.mbAscend)
+		{
+			if(bCanClimbOut())
+			{
+				ApplyForce(JumpForce, Vector3.up, secDelta);
+			}
+			else
+			{
+				ApplyForce(SwimUpMoveForce, Vector3.up, secDelta);
+			}
+		}
+
+		//friction / gravity / bouyancy
+		ApplyFriction(secDelta, SwimFriction);
+		ApplyForce(GravityForce, Vector3.down, secDelta);
+		ApplyForce(BouyancyForce, Vector3.up, secDelta);
+
+		pos	+=mVelocity * secDelta;
+
+		mVelocity	+=moveVec * 0.5f;
+
+		if(mPI.mbAscend)
+		{
+			ApplyForce(SwimUpMoveForce, Vector3.up, secDelta);
+		}
+
+		//friction / gravity / bouyancy
+		ApplyFriction(secDelta, SwimFriction);
+		ApplyForce(GravityForce, Vector3.down, secDelta);
+		ApplyForce(BouyancyForce, Vector3.up, secDelta);
+
+		return	pos;
+	}
+
+	Vector3 UpdateFly(float secDelta)
 	{
 		Vector3	startPos	=mObjXForm.transform.position;
 
@@ -95,29 +218,29 @@ public class PlayerMove
 		moveVec	*=FlyMoveForce;
 
 		AccumulateVelocity(moveVec);
-		ApplyFriction(Time.deltaTime, FlyFriction);
+		ApplyFriction(secDelta, FlyFriction);
 
 		Vector3	pos	=startPos;
 
 		if(mPI.mbAscend)
 		{
-			ApplyForce(FlyUpMoveForce, Vector3.up, Time.deltaTime);
+			ApplyForce(FlyUpMoveForce, Vector3.up, secDelta);
 		}
-		pos	+=mVelocity * Time.deltaTime;
+		pos	+=mVelocity * secDelta;
 
 		AccumulateVelocity(moveVec);
-		ApplyFriction(Time.deltaTime, FlyFriction);
+		ApplyFriction(secDelta, FlyFriction);
 
 		if(mPI.mbAscend)
 		{
-			ApplyForce(FlyUpMoveForce, Vector3.up, Time.deltaTime);
+			ApplyForce(FlyUpMoveForce, Vector3.up, secDelta);
 		}
 
 		return	pos;
 	}
 
 
-	Vector3 UpdateGround(out bool bJumped)
+	Vector3 UpdateGround(float secDelta, out bool bJumped)
 	{
 		bool	bGravity	=false;
 		float	friction	=GroundFriction;
@@ -156,35 +279,35 @@ public class PlayerMove
 		}
 
 		AccumulateVelocity(moveVec);
-		ApplyFriction(Time.deltaTime, friction);
+		ApplyFriction(secDelta, friction);
 
 		Vector3	pos	=startPos;
 
 		if(bGravity)
 		{
-			ApplyForce(GravityForce, Vector3.down, Time.deltaTime);
+			ApplyForce(GravityForce, Vector3.down, secDelta);
 		}
 		if(bJumped)
 		{
-			ApplyForce(JumpForce, Vector3.up, Time.deltaTime);
+			ApplyForce(JumpForce, Vector3.up, secDelta);
 
 			//jump use a 60fps delta time for consistency
 			pos	+=mVelocity * (1f/60f);
 		}
 		else
 		{
-			pos	+=mVelocity * Time.deltaTime;
+			pos	+=mVelocity * secDelta;
 		}
 
 		AccumulateVelocity(moveVec);
-		ApplyFriction(Time.deltaTime, friction);
+		ApplyFriction(secDelta, friction);
 		if(bGravity)
 		{
-			ApplyForce(GravityForce, Vector3.down, Time.deltaTime);
+			ApplyForce(GravityForce, Vector3.down, secDelta);
 		}
 		if(bJumped)
 		{
-			ApplyForce(JumpForce, Vector3.up, Time.deltaTime);
+			ApplyForce(JumpForce, Vector3.up, secDelta);
 		}
 
 		return	pos;

@@ -9,8 +9,13 @@ public class Player : Mobile
 	ulong	mLocalID;	//steam id valid on client
 
 	//3rd person movement stuff
-	PlayerMove	mPM;
-	PlayerCam	mMNC;
+	PlayerMove		mPM;
+	PlayerCam		mMNC;
+	PlayerInputs	mPI;
+
+	//for talk between Update and FixedUpdate
+	bool	mbSnapCam;
+	Vector3	mMoveVec;
 
 
 	void Start()
@@ -52,10 +57,10 @@ public class Player : Mobile
 			}
 
 			CharacterController	cc	=GetComponent<CharacterController>();
-			PlayerInputs		pi	=GetComponent<PlayerInputs>();
+			mPI						=GetComponent<PlayerInputs>();
 
-			mPM		=new PlayerMove(cc, transform, pi);
-			mMNC	=new PlayerCam(cc, noggin, transform, pi);
+			mPM		=new PlayerMove(cc, transform, noggin, mPI);
+			mMNC	=new PlayerCam(cc, noggin, transform, mPI);
 		}
 	}
 
@@ -64,31 +69,35 @@ public class Player : Mobile
 	{
 		base.Update();
 
-		if(!IsClient || !IsSpawned)
+		if(!IsClient || !IsSpawned || !IsLocalPlayer)
 		{
 			return;
 		}
+
+		mPI.PollMouse();
+
+		mMNC.UpdateTurn(out mbSnapCam);
 	}
 
 	void FixedUpdate()
 	{
-		if(!IsClient || !IsSpawned)
+		if(!IsClient || !IsSpawned || !IsLocalPlayer)
 		{
 			return;
 		}
-
-		if(!IsLocalPlayer)
-		{
-			return;
-		}
-
-		bool	bSnapCam;
-		mMNC.UpdateTurn(out bSnapCam);
 
 		Vector3	moveVec;
-		mPM.Update(out moveVec);
+		mPM.Update(Time.fixedDeltaTime, out moveVec);
 
-		mMNC.UpdateCam(moveVec, bSnapCam);
+		mMoveVec	+=moveVec;
+	}
+
+	void LateUpdate()
+	{
+		mMNC.UpdateCam(Time.deltaTime, mMoveVec, mbSnapCam);
+
+		mMoveVec	=Vector3.zero;
+		mbSnapCam	=false;
 	}
 
 

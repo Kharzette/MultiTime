@@ -3,12 +3,13 @@ x	Return zoom after cam collision over
 x	Get updates on fixed timesteps
 x	Grounded jumps
 x	Get movement replicating and smoov
-	Turn speed faster on built clients.  Double process or framerate diff?  Not scaling by deltatime?
+x	Turn speed faster on built clients. (old deltas work)
+x	Throw up a few stairs and platforms and stuff to see how falling looks (not great, landing is too soft)
+x	Check out how rigidbodies work networked (not good)
+	Mouse lock to center doesn't work with old deltas
 	Zoom lerp pauses if not mouse looking or moving
 	Think about overall movement speed + jump
 		If jump increases forward move speed a bit, people will hop everywhere
-x	Check out how rigidbodies work networked (not good)
-	Throw up a few stairs and platforms and stuff to see how falling looks
 	Combat dummy to practice combat on
 	Basic enemy AI
 	Click selecting stuff
